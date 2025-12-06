@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강의 상세: 교사 수업 혁신</title>
+    <style>
+        :root {
+            --bg-color: #FDFCF8;
+            --bg-section-alt: #F7F5F0;
+            --text-main: #333333;
+            --text-sub: #555555;
+            --color-primary: #1A2B4C;
+            --color-secondary: #2E4A3D;
+            --color-accent: #E8F0FE;
+            --border-color: #E0E0E0;
+            --container-width: 800px;
+            --spacing-sm: 16px;
+            --spacing-md: 32px;
+            --spacing-lg: 64px;
+            --radius-md: 12px;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            word-break: keep-all;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header-box {
+            background-color: white;
+            border: 2px solid #5a67d8;
+            /* Indigo for education */
+            border-radius: var(--radius-md);
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .course-id {
+            color: #5a67d8;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .course-title {
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        .course-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-sub);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .course-catchphrase {
+            font-style: italic;
+            color: #444;
+            font-weight: 600;
+            background-color: #f0f4fa;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+        }
+
+        .course-flow {
+            display: inline-block;
+            background-color: var(--bg-section-alt);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: var(--text-sub);
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-top: 16px;
+            display: block;
+            max-width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            background: white;
+            padding: 24px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 12px;
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .list-tree {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        .list-tree li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .list-tree li::before {
+            content: '├─';
+            position: absolute;
+            left: 0;
+            color: #ccc;
+            font-family: monospace;
+        }
+
+        .list-tree li:last-child::before {
+            content: '└─';
+        }
+
+        .week-block {
+            margin-bottom: 24px;
+        }
+
+        .week-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 12px;
+            background-color: rgba(90, 103, 216, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .cta-container {
+            position: sticky;
+            bottom: 20px;
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            border-radius: var(--radius-md);
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #12213A;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: white;
+            border: 1px solid var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .btn-outline:hover {
+            background-color: #f8f9fa;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+            color: var(--color-primary);
+        }
+
+        @media (max-width: 600px) {
+            .course-title {
+                font-size: 1.5rem;
+            }
+
+            .cta-container {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-link">← 메인으로 돌아가기</a>
+
+        <div class="header-box">
+            <span class="course-id">E-001</span>
+            <h1 class="course-title">📚 교사의 야근을 줄이는 AI 수업 자료</h1>
+            <h2 class="course-subtitle">"야근하던 수업 준비를 1시간에"</h2>
+            <div class="course-catchphrase">💡 "교안 작성 → 슬라이드 → 평가 자료까지 AI가 자동으로"</div>
+            <div class="course-flow">
+                수업 혁신 | 교안·자료 AI 활용
+            </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📊</span>
+                <h2 class="section-title">핵심 정보</h2>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">기간</span>
+                    <span class="info-value">4주 (총 8차시)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">일정</span>
+                    <span class="info-value">매주 화/목 16:00 (방과후)</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">형식</span>
+                    <span class="info-value">온라인 실시간 + VOD 무제한</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">대상</span>
+                    <span class="info-value">초·중·고 교사, 학원·과외 강사</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">정원</span>
+                    <span class="info-value">50명 (선착순)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Goals -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🎯</span>
+                <h2 class="section-title">배워갈 것</h2>
+            </div>
+            <ul class="list-tree">
+                <li>ChatGPT로 과목별 교안 자동 생성</li>
+                <li>Gamma AI로 프로 수준의 수업 슬라이드</li>
+                <li>단원평가·형성평가 자동 생성 & 채점</li>
+                <li>학습 자료 (워크시트, 요약 노트) 제작</li>
+                <li>학생별 맞춤형 과제 생성 (차별화 학습)</li>
+                <li>학부모 상담 자료 자동화</li>
+                <li>수업 영상 제작 & 온라인 학습 자료 구축</li>
+                <li>교사 업무량 40% 줄이는 자동화 워크플로우</li>
+            </ul>
+        </div>
+
+        <!-- Curriculum -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📅</span>
+                <h2 class="section-title">차시별 커리큘럼</h2>
+            </div>
+
+            <div class="week-block">
+                <div class="week-title">Week 1: AI 도구 입문 & 교안 자동화</div>
+                <ul class="list-tree">
+                    <li>1차시: ChatGPT로 교안 작성 (학년별, 과목별 예시) [실습] 다음 주 교안 작성</li>
+                    <li>2차시: Gamma AI 슬라이드 (이미지, 차트 자동 생성) [실습] 수업 자료 제작</li>
+                </ul>
+            </div>
+
+            <div class="week-block">
+                <div class="week-title">Week 2: 평가·개인화 학습</div>
+                <ul class="list-tree">
+                    <li>3차시: 평가 문항 자동 생성 (객관식, 서술형) [실습] 단원평가 만들기</li>
+                    <li>4차시: 학생별 맞춤 과제 (수준별, 관심별) [실습] 우리반 맞춤 과제 세트</li>
+                </ul>
+            </div>
+
+            <div class="week-block">
+                <div class="week-title">Week 3: 학생 소통 & 부모 소통</div>
+                <ul class="list-tree">
+                    <li>5차시: 성적 피드백 자동 작성 (개선점 포함) [실습] 개인별 피드백 레터</li>
+                    <li>6차시: 학부모 상담 자료 제작 (성장 그래프, 분석) [실습] 학급 통계 자료</li>
+                </ul>
+            </div>
+
+            <div class="week-block">
+                <div class="week-title">Week 4: 온라인·하이브리드 학습</div>
+                <ul class="list-tree">
+                    <li>7차시: 온라인 학습 자료 제작 (영상 스크립트, 자막) [실습] 개념 설명 스크립트</li>
+                    <li>8차시: 수업 녹화·편집 가이드 (최소 시간 최대 효과) [실습] 첫 온라인 영상 제작</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Materials -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📚</span>
+                <h2 class="section-title">제공 자료 (총 40개 이상)</h2>
+            </div>
+            <ul class="list-tree">
+                <li>과목별 AI 교안 템플릿 (초중고)</li>
+                <li>평가 문항 생성 프롬프트 모음</li>
+                <li>Gamma AI 수업 슬라이드 20개 예시</li>
+                <li>학생 피드백 자동화 템플릿</li>
+                <li>학부모 상담 자료 템플릿</li>
+                <li>온라인 수업 제작 가이드 (영상)</li>
+                <li>수업 녹화 편집 팁 & 소프트웨어</li>
+                <li>AI 윤리 & 학생 개인정보 보호</li>
+                <li>학년별·과목별 우수 사례 모음</li>
+                <li>교사 커뮤니티 "수업 자료 공유" 그룹</li>
+                <li>월간 자동화 아이디어 뉴스레터</li>
+                <li>학교 도입 가이드 (교감, 교장용)</li>
+            </ul>
+        </div>
+
+        <!-- Benefits -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🎁</span>
+                <h2 class="section-title">수강 혜택</h2>
+            </div>
+            <ul class="list-tree">
+                <li>실시간 강의 + 무제한 VOD</li>
+                <li>1:1 수업 자료 피드백 (주 1회)</li>
+                <li>과목별·학년별 AI 활용 상담</li>
+                <li>월 1회 "수업 사례 공유" 특강</li>
+                <li>학교/학원 단체 프로그램 지원</li>
+                <li>교사용 온라인 커뮤니티 멤버십</li>
+                <li>수료증 (연수 시간 인정 가능)</li>
+                <li>평생 자료 업데이트</li>
+            </ul>
+        </div>
+
+        <!-- Target Audience -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">💬</span>
+                <h2 class="section-title">이런 분들을 위해 설계했어요</h2>
+            </div>
+            <ul class="list-tree">
+                <li>밤 12시까지 수업 준비하던 분</li>
+                <li>학생 개인화 학습을 하고 싶지만 시간이 없던 분</li>
+                <li>하이브리드 수업 준비가 필요한 분</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-container">
+        <a href="https://open.kakao.com/me/asmong" target="_blank" class="btn btn-outline">💬 상담하기</a>
+        <a href="#" class="btn btn-primary" onclick="alert('준비 중입니다.')">📝 수강신청</a>
+    </div>
+
+</body>
+
+</html>
