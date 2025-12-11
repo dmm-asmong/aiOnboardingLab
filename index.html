@@ -511,149 +511,70 @@
         <div class="container">
             <div class="contact-container">
                 <div class="contact-info">
-                    <h2 class="section-title" style="color: var(--color-primary);">기관 맞춤 상담 안내</h2>
+                    <h2 class="section-title" style="margin-bottom: 32px; font-size: 2.8rem; line-height: 1.2;">가장
+                        빠른<br>맞춤 상담
+                        안내</h2>
 
-                    <p class="reason-text" style="margin-bottom: 24px;">
+                    <p class="reason-text"
+                        style="margin-bottom: 32px; font-size: 1.1rem; color: #4B5563; line-height: 1.6;">
                         교육 대상과 대략적인 일정, 예산만 알려주세요.<br>
                         기관 상황에 맞는 AI 교육 플랜을 평균 24시간 이내에 제안드립니다.
                     </p>
 
-                    <h3 class="section-subtitle" style="margin-bottom: 16px; font-weight: 700; font-size: 1.1rem;">
-                        상담은 이렇게 진행돼요
-                    </h3>
-
-                    <ul class="reason-list"
-                        style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px;">
+                    <ul class="contact-benefits">
                         <li>
-                            <strong>1. 상담 신청서 작성</strong><br>
-                            <span style="color: var(--color-text-light);">
-                                온라인 폼에 기본 정보와 교육 방향을 간단히 적어주세요.
-                            </span>
+                            <i class="fas fa-check-circle" style="color: var(--color-accent);"></i>
+                            <span>맞춤형 커리큘럼 설계</span>
                         </li>
                         <li>
-                            <strong>2. 1차 메일·전화 상담</strong><br>
-                            <span style="color: var(--color-text-light);">
-                                담당자가 일정과 목표를 확인하고, 필요한 내용을 추가로 여쭤봅니다.
-                            </span>
+                            <i class="fas fa-check-circle" style="color: var(--color-accent);"></i>
+                            <span>전문 강사 매칭 지원</span>
                         </li>
                         <li>
-                            <strong>3. 맞춤 커리큘럼 &amp; 견적서 제안</strong><br>
-                            <span style="color: var(--color-text-light);">
-                                기관 상황에 맞춘 교육 구성안과 예상 비용을 24시간 이내에 보내드립니다.
-                            </span>
+                            <i class="fas fa-check-circle" style="color: var(--color-accent);"></i>
+                            <span>예산 맞춤 견적 제공</span>
                         </li>
                     </ul>
 
-                    <p class="reason-text" style="margin-top: 24px; font-size: 0.9rem; color: var(--color-text-light);">
-                        입력해주신 정보는 교육 제안 및 일정 조율 목적에만 사용되며,<br>
-                        그 외의 용도로는 활용하지 않습니다.
-                    </p>
+                    <div class="contact-socials">
+                        <a href="#" class="social-btn kakao">
+                            <i class="fas fa-comment"></i>
+                        </a>
+                        <a href="mailto:contact@example.com" class="social-btn email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+
+
+
+
                 </div>
 
-                <div class="contact-form">
+                <div class="contact-form-card">
                     <form action="#">
-                        <div class="form-group">
-                            <label class="form-label">기관/학교명</label>
-                            <input type="text" class="form-input" placeholder="예: 한국고등학교, XX기업 인재개발원">
-                        </div>
-
                         <div class="form-row">
                             <div class="form-group">
-                                <label class="form-label">담당자 이름</label>
-                                <input type="text" class="form-input" placeholder="예: 홍길동">
+                                <label class="form-label hidden-label">소속 및 성함</label>
+                                <input type="text" class="form-input-filled" placeholder="소속 및 성함">
                             </div>
-
                             <div class="form-group">
-                                <label class="form-label">담당자 연락처 (이메일 또는 전화번호)</label>
-                                <input type="text" class="form-input" placeholder="제안서를 받으실 이메일 또는 전화번호를 입력해주세요">
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">관심 교육 대상</label>
-                                <select class="form-select">
-                                    <option>대상 선택</option>
-                                    <option>교사 / 교육전문직</option>
-                                    <option>기업 임직원</option>
-                                    <option>초/중/고 학생</option>
-                                    <option>경력단절여성 / 비전공자</option>
-                                    <option>기타</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">예상 인원수</label>
-                                <select class="form-select">
-                                    <option>인원 범위 선택</option>
-                                    <option>10명 이하</option>
-                                    <option>11–20명</option>
-                                    <option>21–40명</option>
-                                    <option>41명 이상</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label class="form-label">희망 일정</label>
-                                <input type="text" class="form-input" placeholder="예: 7월 중 토요일 3시간 특강 / 8월 방학 중 2일 캠프">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">진행 형태</label>
-                                <select class="form-select">
-                                    <option>진행 형태 선택</option>
-                                    <option>오프라인</option>
-                                    <option>온라인</option>
-                                    <option>온·오프라인 병행</option>
-                                    <option>미정</option>
-                                </select>
+                                <label class="form-label hidden-label">연락처</label>
+                                <input type="text" class="form-input-filled" placeholder="연락처">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">교육 목표·관심 프로그램</label>
-                            <p class="form-help"
-                                style="margin-bottom: 8px; color: var(--color-text-light); font-size: 0.9rem;">
-                                원하시는 교육 방향을 선택해주세요. 복수 선택 가능
-                            </p>
-                            <div class="checkbox-group" style="display: flex; flex-direction: column; gap: 6px;">
-                                <label class="checkbox-item" style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox"> 교사 AI 수업 설계·PPT 교안 제작
-                                </label>
-                                <label class="checkbox-item" style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox"> 경단녀·비전공자 디지털 리스킬링
-                                </label>
-                                <label class="checkbox-item" style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox"> 청소년 AI 진로·창의 프로젝트
-                                </label>
-                                <label class="checkbox-item" style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox"> AI 업무자동화/문서 작성
-                                </label>
-                                <label class="checkbox-item" style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox"> 이미지·동화·웹툰 등 창의 프로젝트
-                                </label>
-                                <label class="checkbox-item" style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox"> 기타
-                                </label>
-                                <input type="text" class="form-input" placeholder="기타를 선택하셨다면 구체적으로 적어주세요">
-                            </div>
+                            <label class="form-label hidden-label">이메일 주소</label>
+                            <input type="email" class="form-input-filled" placeholder="이메일 주소">
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">예상 예산 범위 (선택)</label>
-                            <input type="text" class="form-input" placeholder="대략적인 예산 범위가 있다면 알려주세요. 없으시면 비워두셔도 됩니다.">
+                            <label class="form-label hidden-label">문의 내용</label>
+                            <textarea class="form-input-filled" rows="4" placeholder="문의 내용을 입력해주세요"></textarea>
                         </div>
 
-                        <div class="form-group">
-                            <label class="form-label">기타 요청 사항 (선택)</label>
-                            <textarea class="form-input" rows="3"
-                                placeholder="참여 대상의 특성, 내부 규정, 공간 제약 등이 있다면 적어주세요."></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-full">
-                            상담 신청하기 (평균 24시간 내 답변)
+                        <button type="submit" class="btn btn-pill btn-full">
+                            무료 커리큘럼 받기 <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
                         </button>
                     </form>
                 </div>
