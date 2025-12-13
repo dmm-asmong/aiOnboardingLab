@@ -255,6 +255,13 @@ img {
     background-clip: text;
 }
 
+.text-gradient-light {
+    background: linear-gradient(135deg, #60A5FA 0%, #A78BFA 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 /* Scroll Progress Bar */
 .scroll-progress-container {
     position: fixed;
@@ -377,23 +384,29 @@ header.scrolled {
  * HERO SECTION REDESIGN
  */
 .hero-wrapper {
-    background: var(--bg-gradient-hero);
+    /* Dark overlay (90% opacity navy) on top of image */
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 58, 138, 0.9) 100%), url('images/hero_visual_flipped.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     position: relative;
     overflow: hidden;
-    padding-top: calc(var(--header-height) + 80px);
-    padding-bottom: 120px;
+    padding-top: calc(var(--header-height) + 100px);
+    padding-bottom: 140px;
+    color: white;
 }
 
 .hero-stack {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 60px;
+    justify-content: flex-start;
 }
 
-/* Left Column (Text) - 60% */
+/* Left Column (Text) - Adjust for full bg */
 .hero-text-col {
-    flex: 6;
+    width: 100%;
+    max-width: 780px;
     opacity: 0;
     transform: translateY(20px);
     animation: fadeUp 0.8s ease-out forwards;
@@ -401,28 +414,29 @@ header.scrolled {
 
 /* Right Column (Visual) - 40% */
 .hero-visual-col {
-    flex: 4;
-    position: relative;
+    display: none;
 }
 
 /* Typography & Elements */
 .hero-label {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: #E0E7FF;
-    /* Light Indigo */
-    color: var(--color-accent-dark);
-    border-radius: var(--radius-full);
-    font-size: 0.9rem;
-    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    background-color: transparent;
+    color: #60A5FA;
+    /* Bright Blue/Cyan */
+    border-radius: 0;
+    font-size: 1rem;
+    font-weight: 600;
     margin-bottom: 24px;
+    letter-spacing: 0.05em;
 }
 
 .hero-headline {
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 800;
     line-height: 1.2;
-    color: var(--text-primary);
+    color: white;
     margin-bottom: 24px;
     letter-spacing: -0.02em;
     word-break: keep-all;
@@ -431,7 +445,8 @@ header.scrolled {
 .hero-subheadline {
     font-size: 1.25rem;
     line-height: 1.6;
-    color: var(--color-text-light);
+    color: #94A3B8;
+    /* Slate-400 */
     margin-bottom: 40px;
     max-width: 90%;
 }
@@ -444,7 +459,8 @@ header.scrolled {
     gap: 8px;
     font-size: 0.95rem;
     font-weight: 500;
-    color: var(--color-text-lighter);
+    color: #64748B;
+    /* Slate-500 */
 }
 
 .trust-icon {
@@ -454,17 +470,21 @@ header.scrolled {
 /* Visual Frame */
 .visual-frame {
     width: 100%;
-    aspect-ratio: 4/3;
-    background: white;
-    border-radius: 20px;
-    /* Rounded corners */
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-    /* Soft shadow */
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    /* aspect-ratio: 4/3; Removes fixed box ratio */
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    overflow: visible;
+}
+
+.visual-frame img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
 }
 
 .visual-placeholder {
@@ -477,6 +497,24 @@ header.scrolled {
     margin-bottom: 16px;
     color: var(--color-accent);
     opacity: 0.2;
+}
+
+.hero-actions .btn-outline {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.hero-actions .btn-primary {
+    background-color: #3B82F6;
+    /* Bright Blue */
+    color: white;
+}
+
+.hero-actions .btn-outline:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: white;
+    color: white;
 }
 
 /* Button Hover Animation Override */
@@ -507,7 +545,7 @@ header.scrolled {
  * PRINCIPLES SECTION (Redesign)
  */
 .principles-section {
-    background-color: var(--bg-gray);
+    background-color: var(--bg-white);
     /* Background-2 */
     padding: 100px 0;
 }
@@ -600,35 +638,44 @@ header.scrolled {
 
 /* Responsive: Mobile for Hero stack fix */
 @media (max-width: 768px) {
+    .hero-wrapper {
+        padding-top: calc(var(--header-height) + 60px);
+        padding-bottom: 80px;
+    }
+
     .hero-stack {
         flex-direction: column;
-        /* Vertical stack */
         gap: 40px;
-        text-align: center;
         align-items: flex-start;
+        /* Ensure left align items */
     }
 
     .hero-text-col {
         width: 100%;
         text-align: left;
-        /* Keeping left alignment consistent */
-    }
-
-    .hero-visual-col {
-        width: 100%;
+        /* Explicit left align text */
     }
 
     .hero-headline {
-        font-size: 2.5rem;
+        font-size: 2.25rem;
+        /* Slightly smaller for mobile */
     }
 
     .hero-subheadline {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
+        max-width: 100%;
     }
 
     .hero-actions {
-        justify-content: flex-start;
-        /* Align buttons left */
+        flex-direction: column;
+        /* Stack buttons on mobile */
+        width: 100%;
+        gap: 12px;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+        /* Full width buttons */
     }
 }
 
@@ -1194,7 +1241,8 @@ header.scrolled {
     left: 0;
     width: 100%;
     height: 2px;
-    background: var(--border-color);
+    background: #CBD5E1;
+    /* Slate-300, darker than border-color */
     z-index: 0;
 }
 
@@ -1202,7 +1250,7 @@ header.scrolled {
     position: relative;
     z-index: 1;
     text-align: center;
-    background: white;
+    background: transparent;
     padding: 0 10px;
 }
 
