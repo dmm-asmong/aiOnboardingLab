@@ -213,6 +213,15 @@ img {
     filter: brightness(1.1);
 }
 
+.btn-blue {
+    background-color: #2563EB !important;
+    color: white !important;
+}
+
+.btn-blue:hover {
+    background-color: #1D4ED8 !important;
+}
+
 .btn-full {
     width: 100%;
 }
