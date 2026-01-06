@@ -184,4 +184,126 @@ document.addEventListener('DOMContentLoaded', () => {
             navLinks.classList.toggle('active');
         });
     }
+
+    // 7. Contact Form Submission (Google Sheets)
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Button Loading State
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '전송 중... <i class="fas fa-spinner fa-spin"></i>';
+
+            // Collect Data
+            const name = document.getElementById('form-name').value;
+            const phone = document.getElementById('form-phone').value;
+            const email = document.getElementById('form-email').value;
+            const message = document.getElementById('form-message').value;
+
+            // Basic Phone Validation (010-xxxx-xxxx or 02-xxx-xxxx)
+            // Allows: 010-1234-5678, 02-123-4567, 031-123-4567
+            const phoneRegex = /^0\d{1,2}-\d{3,4}-\d{4}$/;
+            if (!phoneRegex.test(phone)) {
+                alert('연락처 형식이 올바르지 않습니다.\n하이픈(-)을 포함하여 입력해주세요.\n(예: 010-1234-5678)');
+                const phoneInput = document.getElementById('form-phone');
+                phoneInput.focus();
+                // Restore button state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+                return;
+            }
+
+            const formData = {
+                name: name,
+                phone: phone,
+                email: email,
+                message: message
+            };
+
+            // Google Apps Script Web App URL
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbz7j-ks94iygdojnNtZidvApaOV0hWdGLkMhNDNotKbACP9dO1lwfxb5dyDiFppQW136g/exec';
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    // 'application/json' triggers a CORS preflight options check which GAS doesn't handle.
+                    // 'text/plain' allows a simple POST without preflight.
+                    'Content-Type': 'text/plain'
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => {
+                    // With no-cors, we can't fully check response.ok, but if we get here, it usually means sent.
+                    alert('문의가 접수되었습니다. 담당자가 확인 후 빠르게 연락드리겠습니다.');
+                    contactForm.reset();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                })
+                .finally(() => {
+                    // Restore Button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                });
+        });
+    }
+    // 8. Auto-format Phone Number
+    const phoneInput = document.getElementById('form-phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function (e) {
+            let number = e.target.value.replace(/[^0-9]/g, '');
+            let tel = '';
+
+            // Seoul Case (02)
+            if (number.substring(0, 2) === '02') {
+                if (number.length < 3) {
+                    return e.target.value = number;
+                } else if (number.length < 6) {
+                    tel += number.substr(0, 2);
+                    tel += '-';
+                    tel += number.substr(2);
+                } else if (number.length < 10) {
+                    tel += number.substr(0, 2);
+                    tel += '-';
+                    tel += number.substr(2, 3);
+                    tel += '-';
+                    tel += number.substr(5);
+                } else {
+                    tel += number.substr(0, 2);
+                    tel += '-';
+                    tel += number.substr(2, 4);
+                    tel += '-';
+                    tel += number.substr(6);
+                }
+            } else {
+                // Others (010, 031, etc.)
+                if (number.length < 4) {
+                    return e.target.value = number;
+                } else if (number.length < 7) {
+                    tel += number.substr(0, 3);
+                    tel += '-';
+                    tel += number.substr(3);
+                } else if (number.length < 11) {
+                    tel += number.substr(0, 3);
+                    tel += '-';
+                    tel += number.substr(3, 3);
+                    tel += '-';
+                    tel += number.substr(6);
+                } else {
+                    tel += number.substr(0, 3);
+                    tel += '-';
+                    tel += number.substr(3, 4);
+                    tel += '-';
+                    tel += number.substr(7);
+                }
+            }
+            e.target.value = tel;
+        });
+    }
+
 });
