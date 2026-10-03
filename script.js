@@ -1,78 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // 1. Scroll Progress Bar
+    const header = document.getElementById('header');
     window.addEventListener('scroll', () => {
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        const progressBar = document.querySelector('.scroll-progress-bar');
-        if (progressBar) {
-            progressBar.style.width = scrolled + "%";
-        }
-
-        // Sticky Header Logic reused here
-        const header = document.getElementById('header');
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
-
-    // 2. Stats Count-up Animation
-    const statsObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const target = parseFloat(entry.target.getAttribute('data-target'));
-                const duration = 2000; // 2 seconds
-                const start = 0;
-                const startTime = performance.now();
-
-                const suffix = entry.target.getAttribute('data-suffix') || '';
-
-                const animate = (currentTime) => {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-
-                    // Ease out quart
-                    const ease = 1 - Math.pow(1 - progress, 4);
-
-                    const current = start + (target - start) * ease;
-
-                    let formattedNumber;
-                    if (Number.isInteger(target)) {
-                        formattedNumber = Math.floor(current);
-                        // Handle comma for thousands
-                        if (formattedNumber >= 1000) {
-                            formattedNumber = formattedNumber.toLocaleString();
-                        }
-                    } else {
-                        formattedNumber = current.toFixed(1);
-                    }
-
-                    entry.target.innerText = formattedNumber + suffix;
-
-                    if (progress < 1) {
-                        requestAnimationFrame(animate);
-                    } else {
-                        // Ensure final value matches target with formatting
-                        let finalNumber = target;
-                        if (Number.isInteger(target) && target >= 1000) {
-                            finalNumber = target.toLocaleString();
-                        }
-                        entry.target.innerText = finalNumber + suffix;
-                    }
-                };
-
-                requestAnimationFrame(animate);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.stat-number').forEach(stat => {
-        statsObserver.observe(stat);
-    });
+        header.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
 
     // 3. Curriculum Filter & Load More
     const filterBtns = document.querySelectorAll('.filter-btn');
@@ -83,52 +14,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const INITIAL_COUNT = 6;
 
     function renderCurriculum() {
-        let visibleCount = 0;
-
-        curriculumItems.forEach(item => {
-            const category = item.getAttribute('data-category');
-            const matchesFilter = currentFilter === 'all' || category === currentFilter;
-
-            if (matchesFilter) {
-                // Determine if it should be hidden based on expansion state (only for 'all' filter)
-                if (currentFilter === 'all' && !isExpanded && visibleCount >= INITIAL_COUNT) {
-                    item.style.display = 'none';
-                } else {
-                    item.style.display = 'flex'; // Restore flex display
-                }
-                visibleCount++;
-            } else {
-                item.style.display = 'none';
-            }
-        });
-
-        // Toggle Load More Button
-        if (currentFilter === 'all' && !isExpanded && visibleCount > INITIAL_COUNT) {
-            // Wait, visibleCount counts ALL matches. If total matches > 6, we show button?
-            // Yes. In 'all' mode, total items is 14. visibleCount=14.
-            // But we hid some.
-            // Logic check: visibleCount is incremented for ALL matches regardless of hiding.
-            if (loadMoreBtn) loadMoreBtn.style.display = 'inline-flex';
-        } else {
-            if (loadMoreBtn) loadMoreBtn.style.display = 'none';
-        }
+        const matching = [...curriculumItems].filter(item => currentFilter === 'all' || item.dataset.category === currentFilter);
+        const limit = currentFilter === 'all' && !isExpanded ? INITIAL_COUNT : matching.length;
+        curriculumItems.forEach(item => { item.style.display = 'none'; });
+        matching.slice(0, limit).forEach(item => { item.style.display = 'flex'; });
+        loadMoreBtn.style.display = matching.length > limit ? 'inline-flex' : 'none';
+        const category = [...filterBtns].find(btn => btn.dataset.filter === currentFilter).textContent;
+        document.getElementById('curriculum-status').textContent = `${category} 과정 ${matching.length}개 중 ${Math.min(limit, matching.length)}개 표시`;
     }
 
-    // Initial Render
+    filterBtns.forEach(btn => btn.setAttribute('aria-pressed', String(btn.classList.contains('active'))));
     renderCurriculum();
 
     // Event Listeners for Filters
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             // UI Update
-            filterBtns.forEach(b => b.classList.remove('active'));
+            filterBtns.forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-pressed', 'false');
+            });
             btn.classList.add('active');
+            btn.setAttribute('aria-pressed', 'true');
 
             // Logic Update
             currentFilter = btn.getAttribute('data-filter');
-            // Reset expansion when switching filters? Usually yes.
-            // Or keep it? Let's reset for 'all' to feel fresh, or keep logic simple.
-            // If I switch to 'teacher' (show all teachers), then back to 'all', should it be collapsed? Yes.
             if (currentFilter === 'all') isExpanded = false;
 
             renderCurriculum();
@@ -140,6 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
         loadMoreBtn.addEventListener('click', () => {
             isExpanded = true;
             renderCurriculum();
+            const firstNewTitle = curriculumItems[INITIAL_COUNT].querySelector('.curri-title');
+            firstNewTitle.tabIndex = -1;
+            firstNewTitle.focus({ preventScroll: true });
         });
     }
 
@@ -152,158 +65,144 @@ document.addEventListener('DOMContentLoaded', () => {
             const isActive = item.classList.contains('active');
 
             // Close others? (Optional, implies "Accordion" behavior usually)
-            faqItems.forEach(other => other.classList.remove('active'));
+            faqItems.forEach(other => {
+                other.classList.remove('active');
+                other.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+            });
 
             if (!isActive) {
                 item.classList.add('active');
+                question.setAttribute('aria-expanded', 'true');
             }
         });
     });
 
-    // 5. Smooth Scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const href = this.getAttribute('href');
-            if (href === "#") return;
-            const target = document.querySelector(href);
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // 6. Mobile Menu
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const navLinks = document.querySelector('.nav-links');
-
-    if (mobileMenuBtn) {
-        mobileMenuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
+    function closeMenu() {
+        navLinks.classList.remove('active');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        mobileMenuBtn.setAttribute('aria-label', '메뉴 열기');
     }
+    mobileMenuBtn.addEventListener('click', () => {
+        const open = navLinks.classList.toggle('active');
+        mobileMenuBtn.setAttribute('aria-expanded', String(open));
+        mobileMenuBtn.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+    });
+    navLinks.addEventListener('click', event => {
+        if (event.target.closest('a')) closeMenu();
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && navLinks.classList.contains('active')) {
+            closeMenu();
+            mobileMenuBtn.focus();
+        }
+    });
 
-    // 7. Contact Form Submission (Google Sheets)
+    const courseInput = document.getElementById('form-course');
+    const initialCourse = new URLSearchParams(location.search).get('course');
+    if (initialCourse) courseInput.value = initialCourse;
+    document.addEventListener('click', event => {
+        const inquiry = event.target.closest('.course-btn.primary, .track-btn.primary, .curri-btn');
+        if (!inquiry) return;
+        const card = inquiry.closest('.course-card, .track-card-course-style, .curri-card');
+        courseInput.value = card.querySelector('h3').innerText.replace(/\s+/g, ' ').trim();
+        courseInput.focus({ preventScroll: true });
+    });
+
     const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            // Button Loading State
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '전송 중... <i class="fas fa-spinner fa-spin"></i>';
-
-            // Collect Data
-            const name = document.getElementById('form-name').value;
-            const phone = document.getElementById('form-phone').value;
-            const email = document.getElementById('form-email').value;
-            const message = document.getElementById('form-message').value;
-
-            // Basic Phone Validation (010-xxxx-xxxx or 02-xxx-xxxx)
-            // Allows: 010-1234-5678, 02-123-4567, 031-123-4567
-            const phoneRegex = /^0\d{1,2}-\d{3,4}-\d{4}$/;
-            if (!phoneRegex.test(phone)) {
-                alert('연락처 형식이 올바르지 않습니다.\n하이픈(-)을 포함하여 입력해주세요.\n(예: 010-1234-5678)');
-                const phoneInput = document.getElementById('form-phone');
-                phoneInput.focus();
-                // Restore button state
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-                return;
-            }
-
-            const formData = {
-                name: name,
-                phone: phone,
-                email: email,
-                message: message
-            };
-
-            // Google Apps Script Web App URL
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbz7j-ks94iygdojnNtZidvApaOV0hWdGLkMhNDNotKbACP9dO1lwfxb5dyDiFppQW136g/exec';
-
-            fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: {
-                    // 'application/json' triggers a CORS preflight options check which GAS doesn't handle.
-                    // 'text/plain' allows a simple POST without preflight.
-                    'Content-Type': 'text/plain'
-                },
-                body: JSON.stringify(formData)
-            })
-                .then(response => {
-                    // With no-cors, we can't fully check response.ok, but if we get here, it usually means sent.
-                    alert('문의가 접수되었습니다. 담당자가 확인 후 빠르게 연락드리겠습니다.');
-                    contactForm.reset();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-                })
-                .finally(() => {
-                    // Restore Button
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalBtnText;
-                });
-        });
+    const formStatus = document.getElementById('form-status');
+    function showFormStatus(message, state) {
+        formStatus.textContent = message;
+        formStatus.dataset.state = state;
     }
-    // 8. Auto-format Phone Number
+    function validatePhone() {
+        const input = document.getElementById('form-phone');
+        const digits = input.value.replace(/-/g, '');
+        // Domestic mobile, geographic landline, and 070 internet telephone formats.
+        const valid = /^(?:010\d{8}|01[16789]\d{7,8}|02[1-9]\d{6,7}|0(?:3[1-3]|[46][1-4]|5[1-5])[1-9]\d{6,7}|070\d{8})$/.test(digits);
+        document.getElementById('phone-error').textContent = valid ? '' : '휴대폰 또는 지역번호를 포함한 일반전화 번호를 확인해주세요. 예: 010-1234-5678, 02-123-4567, 031-123-4567';
+        input.setAttribute('aria-invalid', String(!valid));
+        return valid;
+    }
+    document.getElementById('form-phone').addEventListener('blur', validatePhone);
+    const emailInput = document.getElementById('form-email');
+    function validateEmail() {
+        const valid = emailInput.validity.valid;
+        document.getElementById('email-error').textContent = valid ? '' : '이메일 주소 형식을 확인해주세요. 예: name@example.com';
+        emailInput.setAttribute('aria-invalid', String(!valid));
+        return valid;
+    }
+    emailInput.addEventListener('blur', validateEmail);
+    emailInput.addEventListener('invalid', validateEmail);
+    emailInput.addEventListener('input', () => {
+        if (emailInput.getAttribute('aria-invalid') === 'true') validateEmail();
+    });
+
+    contactForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        if (submitBtn.disabled) return;
+        if (!validatePhone()) {
+            document.getElementById('form-phone').focus();
+            return;
+        }
+        if (!validateEmail()) {
+            emailInput.focus();
+            return;
+        }
+        const originalBtnText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.textContent = '전송 중…';
+        showFormStatus('문의 내용을 전송하고 있습니다.', 'sending');
+        const message = document.getElementById('form-message').value;
+        const formData = {
+            name: document.getElementById('form-name').value,
+            phone: document.getElementById('form-phone').value,
+            email: document.getElementById('form-email').value,
+            message: courseInput.value.trim() ? `문의 과정: ${courseInput.value.trim()}\n\n${message}` : message
+        };
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbz7j-ks94iygdojnNtZidvApaOV0hWdGLkMhNDNotKbACP9dO1lwfxb5dyDiFppQW136g/exec';
+        try {
+            // Keep this a simple POST; read the ContentService JSON after its redirect.
+            const response = await fetch(scriptURL, {
+                method: 'POST', mode: 'cors', redirect: 'follow',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(formData),
+                signal: AbortSignal.timeout(15000)
+            });
+            if (!response.ok) throw new Error('Request failed');
+            const receipt = await response.json();
+            if (receipt?.result !== 'success') throw new Error('Saving was not confirmed');
+            contactForm.reset();
+            document.getElementById('email-error').textContent = '';
+            emailInput.removeAttribute('aria-invalid');
+            document.getElementById('phone-error').textContent = '';
+            document.getElementById('form-phone').removeAttribute('aria-invalid');
+            showFormStatus('문의가 접수되었습니다. 담당자가 확인 후 연락드리겠습니다.', 'success');
+        } catch (error) {
+            const uncertain = error.name === 'TimeoutError';
+            showFormStatus(uncertain
+                ? '응답을 기다리는 시간이 초과되었습니다. 접수 여부를 확인할 수 없어 입력 내용을 유지했습니다. 다시 보내기 전 이메일 또는 카카오톡으로 확인해주세요.'
+                : '접수 완료를 확인하지 못했습니다. 입력 내용은 유지했습니다. 중복 접수를 피하려면 다시 보내기 전 아래 이메일 또는 카카오톡으로 확인해주세요.', 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+        }
+    });
     const phoneInput = document.getElementById('form-phone');
-    if (phoneInput) {
-        phoneInput.addEventListener('input', function (e) {
-            let number = e.target.value.replace(/[^0-9]/g, '');
-            let tel = '';
-
-            // Seoul Case (02)
-            if (number.substring(0, 2) === '02') {
-                if (number.length < 3) {
-                    return e.target.value = number;
-                } else if (number.length < 6) {
-                    tel += number.substr(0, 2);
-                    tel += '-';
-                    tel += number.substr(2);
-                } else if (number.length < 10) {
-                    tel += number.substr(0, 2);
-                    tel += '-';
-                    tel += number.substr(2, 3);
-                    tel += '-';
-                    tel += number.substr(5);
-                } else {
-                    tel += number.substr(0, 2);
-                    tel += '-';
-                    tel += number.substr(2, 4);
-                    tel += '-';
-                    tel += number.substr(6);
-                }
-            } else {
-                // Others (010, 031, etc.)
-                if (number.length < 4) {
-                    return e.target.value = number;
-                } else if (number.length < 7) {
-                    tel += number.substr(0, 3);
-                    tel += '-';
-                    tel += number.substr(3);
-                } else if (number.length < 11) {
-                    tel += number.substr(0, 3);
-                    tel += '-';
-                    tel += number.substr(3, 3);
-                    tel += '-';
-                    tel += number.substr(6);
-                } else {
-                    tel += number.substr(0, 3);
-                    tel += '-';
-                    tel += number.substr(3, 4);
-                    tel += '-';
-                    tel += number.substr(7);
-                }
-            }
-            e.target.value = tel;
-        });
-    }
+    phoneInput.addEventListener('input', () => {
+        const raw = phoneInput.value.replace(/\D/g, '');
+        const prefixLength = raw.startsWith('02') ? 2 : 3;
+        const number = raw.slice(0, prefixLength + 8);
+        const prefix = number.slice(0, prefixLength);
+        const rest = number.slice(prefixLength);
+        const middleLength = rest.length > 7 ? 4 : 3;
+        phoneInput.value = !rest ? prefix
+            : rest.length <= middleLength ? `${prefix}-${rest}`
+            : `${prefix}-${rest.slice(0, middleLength)}-${rest.slice(middleLength)}`;
+        // Clear an old error as soon as the corrected number is valid.
+        if (phoneInput.getAttribute('aria-invalid') === 'true') validatePhone();
+    });
 
 });
